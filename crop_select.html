@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Select Crop</title>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #11998e, #38ef7d);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            width: 500px;
+            padding: 30px;
+            border-radius: 20px;
+            background: rgba(255,255,255,0.15);
+            backdrop-filter: blur(15px);
+            text-align: center;
+            color: white;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+
+        h2 {
+            margin-bottom: 20px;
+            font-size: 26px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        .card {
+            background: rgba(255,255,255,0.2);
+            padding: 15px;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: 0.3s;
+            border: 2px solid transparent;
+        }
+
+        .card:hover {
+            transform: scale(1.08);
+            background: rgba(255,255,255,0.3);
+        }
+
+        .selected {
+            border: 2px solid #00ff88;
+            background: rgba(0,255,136,0.2);
+            box-shadow: 0 0 15px rgba(0,255,136,0.6);
+        }
+
+        img {
+            width: 70px;
+            height: 70px;
+            margin-bottom: 5px;
+        }
+
+        p {
+            margin: 5px 0 0;
+            font-weight: bold;
+        }
+
+        button {
+            margin-top: 25px;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 12px;
+            background: linear-gradient(45deg, #00c853, #00e676);
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            transition: 0.3s;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        button:hover {
+            transform: scale(1.05);
+            background: linear-gradient(45deg, #00e676, #00c853);
+        }
+
+        .note {
+            margin-top: 10px;
+            font-size: 14px;
+            opacity: 0.8;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h2>🌾 Select Your Crop</h2>
+
+    <form action="/upload_page" method="post">
+
+        <div class="grid">
+
+            <div class="card" onclick="selectCrop(this, 'Mango')">
+                <img src="{{ url_for('static', filename='crops/mango.png') }}">
+                <p>Mango</p>
+            </div>
+
+            <div class="card" onclick="selectCrop(this, 'Cotton')">
+                <img src="{{ url_for('static', filename='crops/cotton.png') }}">
+                <p>Cotton</p>
+            </div>
+
+            <div class="card" onclick="selectCrop(this, 'Grapes')">
+                <img src="{{ url_for('static', filename='crops/grapes.png') }}">
+                <p>Grapes</p>
+            </div>
+
+            <div class="card" onclick="selectCrop(this, 'Tomato')">
+                <img src="{{ url_for('static', filename='crops/tomato.png') }}">
+                <p>Tomato</p>
+            </div>
+
+            <div class="card" onclick="selectCrop(this, 'Sugarcane')">
+                <img src="{{ url_for('static', filename='crops/sugarcane.png') }}">
+                <p>Sugarcane</p>
+            </div>
+
+        </div>
+
+        <!-- Hidden input -->
+        <input type="hidden" name="crop" id=<!DOCTYPE html>
+<html>
+<head>
+    <title>Select Crop</title>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #11998e, #38ef7d);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            width: 520px;
+            padding: 35px;
+            border-radius: 20px;
+            background: rgba(255,255,255,0.15);
+            backdrop-filter: blur(15px);
+            text-align: center;
+            color: white;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+
+        h2 {
+            margin-bottom: 5px;
+            font-size: 26px;
+        }
+
+        .subtitle {
+            font-size: 14px;
+            opacity: 0.8;
+            margin-bottom: 25px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+        }
+
+        .card {
+            background: rgba(255,255,255,0.2);
+            padding: 18px 10px;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: 0.3s;
+            border: 2px solid transparent;
+        }
+
+        .card:hover {
+            transform: scale(1.08);
+            background: rgba(255,255,255,0.3);
+        }
+
+        .selected {
+            border: 2px solid #00ff88;
+            background: rgba(0,255,136,0.2);
+            box-shadow: 0 0 15px rgba(0,255,136,0.6);
+        }
+
+        /* ✅ Emoji icon instead of image - no files needed */
+        .crop-icon {
+            font-size: 48px;
+            margin-bottom: 8px;
+            line-height: 1;
+        }
+
+        /* ✅ Still supports real images if you add them later */
+        .crop-img {
+            width: 70px;
+            height: 70px;
+            margin-bottom: 5px;
+            object-fit: contain;
+        }
+
+        .card p {
+            margin: 5px 0 0;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        button {
+            margin-top: 25px;
+            padding: 12px 40px;
+            border: none;
+            border-radius: 12px;
+            background: linear-gradient(45deg, #00c853, #00e676);
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            transition: 0.3s;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            opacity: 0.5;          /* ✅ Dimmed until crop selected */
+            pointer-events: none;  /* ✅ Disabled until crop selected */
+        }
+
+        button.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        button:hover {
+            transform: scale(1.05);
+        }
+
+        .note {
+            margin-top: 10px;
+            font-size: 13px;
+            opacity: 0.75;
+        }
+
+        /* ✅ Error message */
+        .error-msg {
+            color: #ff4444;
+            background: rgba(255,255,255,0.2);
+            padding: 8px;
+            border-radius: 8px;
+            font-size: 13px;
+            margin-top: 10px;
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h2>🌾 Select Your Crop</h2>
+    <p class="subtitle">Choose the crop you want to scan for disease detection</p>
+
+    <form action="/upload_page" method="post" onsubmit="return validateForm()">
+
+        <div class="grid">
+
+            <div class="card" onclick="selectCrop(this, 'mango')">
+                <div class="crop-icon">🥭</div>
+                <p>Mango</p>
+            </div>
+
+            <div class="card" onclick="selectCrop(this, 'cotton')">
+                <div class="crop-icon">🌿</div>
+                <p>Cotton</p>
+            </div>
+
+            <div class="card" onclick="selectCrop(this, 'grapes')">
+                <div class="crop-icon">🍇</div>
+                <p>Grapes</p>
+            </div>
+
+            <div class="card" onclick="selectCrop(this, 'tomato')">
+                <div class="crop-icon">🍅</div>
+                <p>Tomato</p>
+            </div>
+
+            <div class="card" onclick="selectCrop(this, 'sugarcane')">
+                <div class="crop-icon">🎋</div>
+                <p>Sugarcane</p>
+            </div>
+
+            <div class="card" onclick="selectCrop(this, 'pumpkin')">
+                <div class="crop-icon">🎃</div>
+                <p>Pumpkin</p>
+            </div>
+
+        </div>
+
+        <!-- Hidden input to store selected crop -->
+        <input type="hidden" name="crop" id="cropInput">
+
+        <!-- ✅ Error message if nothing selected -->
+        <div class="error-msg" id="errorMsg">
+            ⚠️ Please select a crop before continuing!
+        </div>
+
+        <button type="submit" id="submitBtn">➡ Continue</button>
+
+        <div class="note" id="noteText">👆 Select a crop to continue</div>
+
+    </form>
+
+</div>
+
+<script>
+function selectCrop(element, crop) {
+    // Remove selected from all cards
+    document.querySelectorAll('.card').forEach(c => c.classList.remove('selected'));
+
+    // Highlight selected card
+    element.classList.add('selected');
+
+    // Set hidden input value
+    document.getElementById('cropInput').value = crop;
+
+    // ✅ Enable the button
+    document.getElementById('submitBtn').classList.add('active');
+
+    // ✅ Update note text
+    document.getElementById('noteText').innerText = '✅ ' + crop.charAt(0).toUpperCase() + crop.slice(1) + ' selected!';
+
+    // Hide error if shown
+    document.getElementById('errorMsg').style.display = 'none';
+}
+
+function validateForm() {
+    const crop = document.getElementById('cropInput').value;
+
+    if (!crop) {
+        // ✅ Show error, block submit
+        document.getElementById('errorMsg').style.display = 'block';
+        return false;
+    }
+
+    return true;
+}
+</script>
+
+</body>
+</html>"cropInput">
+
+        <button type="submit">➡ Continue</button>
+
+        <div class="note">Select a crop to continue</div>
+
+    </form>
+
+</div>
+
+<script>
+function selectCrop(element, crop) {
+    document.querySelectorAll('.card').forEach(c => c.classList.remove('selected'));
+    element.classList.add('selected');
+    document.getElementById('cropInput').value = crop;
+}
+</script>
+
+</body>
+</html>

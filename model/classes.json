@@ -1,0 +1,14 @@
+{
+  "Anthracnose_Mango": 0,
+  "Black_rot_Grape": 1,
+  "Healthy_Leaf": 2,
+  "Powdery_Mildew_Cotton": 3,
+  "Powdery_Mildew_Mango": 4,
+  "Powdery_Mildew_Pumpkin": 5,
+  "RedRot_Sugarcane": 6,
+  "Rust_Sugarcane": 7,
+  "Sooty_Mould_Mango": 8,
+  "Target_Spot_Tomato": 9,
+  "Unknown_Disease": 10,
+  "Yellow_Sugarcane": 11
+}

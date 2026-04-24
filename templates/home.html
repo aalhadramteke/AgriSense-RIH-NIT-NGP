@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Agri AI - Home</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            /* ✅ Farm background image */
+            background-image:
+                linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.45)),
+                url('https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=1600');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+
+        .main-container {
+            display: flex;
+            gap: 30px;
+            padding: 20px;
+        }
+
+        /* ✅ Left welcome card - glass effect */
+        .card {
+            background: rgba(255,255,255,0.12);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.25);
+            padding: 50px 40px;
+            border-radius: 24px;
+            text-align: center;
+            color: white;
+            width: 420px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            transition: transform 0.3s;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        /* ✅ Right weather card - glass blue */
+        .weather-card {
+            background: rgba(33,147,176,0.75);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.25);
+            padding: 35px 30px;
+            border-radius: 24px;
+            color: white;
+            width: 370px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            transition: transform 0.3s;
+        }
+
+        .weather-card:hover {
+            transform: translateY(-5px);
+        }
+
+        /* Icon */
+        .icon {
+            font-size: 55px;
+            margin-bottom: 15px;
+            display: block;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%   { transform: translateY(0); }
+            50%  { transform: translateY(-10px); }
+            100% { transform: translateY(0); }
+        }
+
+        h1 {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            text-shadow: 0 2px 8px rgba(0,0,0,0.3);
+        }
+
+        .desc {
+            color: rgba(255,255,255,0.88);
+            font-size: 15px;
+            line-height: 1.6;
+            margin-bottom: 30px;
+            text-shadow: 0 1px 4px rgba(0,0,0,0.3);
+        }
+
+        /* ✅ Start button */
+        .btn {
+            text-decoration: none;
+            padding: 14px 35px;
+            background: linear-gradient(45deg, #00c853, #00e676);
+            color: white;
+            border-radius: 14px;
+            font-size: 17px;
+            font-weight: 600;
+            transition: all 0.3s;
+            display: inline-block;
+            box-shadow: 0 5px 20px rgba(0,200,83,0.4);
+        }
+
+        .btn:hover {
+            transform: scale(1.06);
+            box-shadow: 0 8px 25px rgba(0,200,83,0.5);
+        }
+
+        /* ✅ Feature badges */
+        .features {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .badge {
+            background: rgba(255,255,255,0.15);
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            border: 1px solid rgba(255,255,255,0.25);
+        }
+
+        /* ✅ Weather styles */
+        .weather-card h2 {
+            font-size: 18px;
+            margin-bottom: 15px;
+            color: white;
+            text-shadow: 0 1px 4px rgba(0,0,0,0.3);
+        }
+
+        .weather-main { text-align: center; margin-bottom: 20px; }
+
+        .weather-temp {
+            font-size: 58px;
+            font-weight: 700;
+            line-height: 1;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+
+        .weather-condition {
+            font-size: 16px;
+            opacity: 0.9;
+            margin-top: 6px;
+        }
+
+        .weather-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-top: 15px;
+        }
+
+        .w-box {
+            background: rgba(255,255,255,0.18);
+            padding: 12px;
+            border-radius: 12px;
+            text-align: center;
+            font-size: 13px;
+            border: 1px solid rgba(255,255,255,0.15);
+            transition: 0.3s;
+        }
+
+        .w-box:hover {
+            background: rgba(255,255,255,0.28);
+        }
+
+        .w-box b {
+            display: block;
+            font-size: 16px;
+            margin-top: 4px;
+        }
+
+        /* ✅ Alert banner */
+        .alert-banner {
+            background: rgba(255,152,0,0.3);
+            border: 1px solid rgba(255,152,0,0.5);
+            border-radius: 10px;
+            padding: 10px 14px;
+            margin-top: 15px;
+            font-size: 13px;
+            color: white;
+            text-align: left;
+        }
+
+        /* ✅ Bottom tagline */
+        .tagline {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: rgba(255,255,255,0.7);
+            font-size: 13px;
+            text-shadow: 0 1px 4px rgba(0,0,0,0.5);
+            white-space: nowrap;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="main-container">
+
+    <!-- ✅ LEFT - Welcome Card -->
+    <div class="card">
+
+        <span class="icon">🌿</span>
+
+        <h1>Welcome to Agri AI</h1>
+
+        <p class="desc">
+            Smart Crop Disease Detection &<br>
+            Farmer Assistance System
+        </p>
+
+        <a href="/select_crop" class="btn">
+            🌱 Start Detection
+        </a>
+
+        <!-- ✅ Feature badges -->
+        <div class="features">
+            <span class="badge">🤖 AI Powered</span>
+            <span class="badge">🌦️ Live Weather</span>
+            <span class="badge">💊 Medicine Guide</span>
+            <span class="badge">📊 Analytics</span>
+        </div>
+
+    </div>
+
+    <!-- ✅ RIGHT - Weather Card -->
+    <div class="weather-card">
+
+        <h2>🌤️ Weather Dashboard</h2>
+
+        {% if weather %}
+
+            <div class="weather-main">
+                <div class="weather-temp">{{ weather.temp }}°C</div>
+                <div class="weather-condition">{{ weather.condition }}</div>
+            </div>
+
+            <div class="weather-grid">
+                <div class="w-box">
+                    🌡️ Temp
+                    <b>{{ weather.temp }}°C</b>
+                </div>
+                <div class="w-box">
+                    💧 Humidity
+                    <b>{{ weather.humidity }}%</b>
+                </div>
+                <div class="w-box">
+                    🌧️ Rain
+                    <b>{{ weather.rain }} mm</b>
+                </div>
+                <div class="w-box">
+                    🌬️ Wind
+                    <b>{{ weather.wind }} km/h</b>
+                </div>
+            </div>
+
+            <!-- ✅ Weather alert based on conditions -->
+            {% if weather.humidity > 80 %}
+            <div class="alert-banner">
+                ⚠️ High humidity! Risk of fungal disease today.
+                Monitor your crops closely.
+            </div>
+            {% elif weather.rain > 5 %}
+            <div class="alert-banner">
+                🌧️ Heavy rain today. Avoid spraying pesticides.
+            </div>
+            {% elif weather.temp > 38 %}
+            <div class="alert-banner">
+                🌡️ Very hot today! Water crops in early morning only.
+            </div>
+            {% else %}
+            <div class="alert-banner" style="background:rgba(76,175,80,0.3);
+                 border-color:rgba(76,175,80,0.5);">
+                ✅ Weather is good for farming today!
+            </div>
+            {% endif %}
+
+        {% else %}
+
+            <div style="text-align:center; padding:30px; opacity:0.8;">
+                <p style="font-size:40px;">⚠️</p>
+                <p>Weather data unavailable</p>
+            </div>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+<!-- ✅ Bottom tagline -->
+<div class="tagline">
+    🌾 Agri AI — Empowering Farmers with Artificial Intelligence
+</div>
+
+</body>
+</html>

@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Crop Guide</title>
+
+    <style>
+        body {
+            font-family: Arial;
+            background: linear-gradient(135deg, #56ab2f, #a8e063);
+            text-align: center;
+            padding: 30px;
+        }
+
+        .box {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            width: 600px;
+            margin: auto;
+        }
+
+        select, button {
+            padding: 10px;
+            margin: 10px;
+            border-radius: 8px;
+        }
+
+        .grid {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .card {
+            background: #f1f1f1;
+            padding: 10px;
+            margin: 10px;
+            border-radius: 10px;
+            width: 150px;
+        }
+
+        img {
+            width: 100%;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="box">
+
+    <h2>🌾 Crop Disease Guide</h2>
+
+    <form method="post">
+        <select name="crop" required>
+            <option value="">Select Crop</option>
+            <option value="Mango">Mango</option>
+            <option value="Cotton">Cotton</option>
+            <option value="Grapes">Grapes</option>
+            <option value="Tomato">Tomato</option>
+            <option value="Sugarcane">Sugarcane</option>
+        </select>
+
+        <button type="submit">Show Diseases</button>
+    </form>
+
+    {% if crop %}
+        <h3>Diseases in {{ crop }}:</h3>
+
+        <div class="grid">
+            {% for d in diseases %}
+            <div class="card">
+                <img src="{{ url_for('static', filename='diseases/' + d.image) }}">
+                <p>{{ d.name }}</p>
+            </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <br>
+    <a href="/">⬅ Back</a>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AgriSense - AI Crop Prediction</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: 'Poppins', sans-serif; 
+            background: linear-gradient(135deg, #1a2e1a 0%, #00c896 50%, #f5a623 100%); 
+            min-height: 100vh; 
+            color: #fff; 
+        }
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+        .header { text-align: center; margin-bottom: 30px; }
+        .header h1 { font-size: 2.5rem; background: rgba(255,255,255,0.1); backdrop-filter: blur(10px); padding: 20px; border-radius: 20px; }
+        .form-card, .result-card { 
+            background: rgba(255,255,255,0.1); backdrop-filter: blur(20px); border-radius: 20px; padding: 30px; margin-bottom: 20px; 
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.2);
+        }
+        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 20px; }
+        input, select { padding: 12px; border: none; border-radius: 10px; background: rgba(255,255,255,0.9); font-size: 16px; width: 100%; }
+        button { 
+            padding: 15px 30px; background: linear-gradient(45deg, #00c896, #f5a623); border: none; border-radius: 50px; 
+            color: white; font-size: 18px; font-weight: 600; cursor: pointer; transition: transform 0.3s; 
+        }
+        button:hover { transform: scale(1.05); }
+        .result-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+        .crop-card { background: rgba(0,200,150,0.3); text-align: center; padding: 20px; border-radius: 15px; }
+        .crop-emoji { font-size: 4rem; }
+        .confidence-bar { background: rgba(255,255,255,0.2); height: 20px; border-radius: 10px; overflow: hidden; margin: 10px 0; }
+        .confidence-fill { height: 100%; background: linear-gradient(90deg, #f5a623, #00c896); transition: width 0.5s; }
+        .risk-card { padding: 15px; border-radius: 10px; margin: 10px 0; text-align: center; font-weight: 600; }
+        .risk-high { background: rgba(255,0,0,0.3); color: #ff4444; }
+        .risk-med { background: rgba(255,165,0,0.3); color: #ff8800; }
+        .risk-low { background: rgba(0,200,150,0.3); color: #00c896; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; background: rgba(255,255,255,0.1); border-radius: 10px; overflow: hidden; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.2); }
+        th { background: rgba(0,0,0,0.2); }
+        canvas { max-height: 300px; }
+        @media (max-width: 768px) { .form-grid { grid-template-columns: 1fr; } .result-grid { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🌱 AgriSense AI Crop Advisor </h1>
+            <p>Enter soil parameters for intelligent crop recommendations</p>
+        </div>
+
+        <div class="form-card">
+            <form id="predictForm">
+                <div class="form-grid">
+                    <input type="number" id="n" placeholder="Nitrogen (N) 0-140" step="0.1" required>
+                    <input type="number" id="p" placeholder="Phosphorus (P) 0-140" step="0.1" required>
+                    <input type="number" id="k" placeholder="Potassium (K) 0-200" step="0.1" required>
+                    <input type="number" id="ph" placeholder="pH 0-14" step="0.1" min="0" max="14" required>
+                    <input type="number" id="temperature" placeholder="Temperature °C 10-45" step="0.1" required>
+                    <input type="number" id="humidity" placeholder="Humidity % 10-100" step="0.1" min="0" max="100" required>
+                    <input type="number" id="rainfall" placeholder="Rainfall mm 10-300" step="0.1" required>
+                    <input type="text" id="location" placeholder="Location (optional)">
+                </div>
+                <button type="button" onclick="fetchWeather()">🌤️ Fetch Weather (GPS)</button>
+                <button type="submit">🚀 Get Recommendation</button>
+            </form>
+        </div>
+
+        <div id="results" class="result-grid" style="display: none;"></div>
+        <div id="historySection" style="display: none;">
+            <h2>📋 Recent Predictions</h2>
+            <table id="historyTable">
+                <thead><tr><th>Date</th><th>Crop</th><th>Yield (kg/ha)</th><th>Inputs</th></tr></thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        const CROPS_EMOJI = {
+            'rice': '🌾', 'maize': '🌽', 'jute': '🌿', 'cotton': '🌱', 'coconut': '🥥',
+            'papaya': '🍑', 'orange': '🍊', 'apple': '🍎', 'muskmelon': '🍈', 'watermelon': '🍉',
+            'grapes': '🍇', 'mango': '🥭', 'banana': '🍌', 'pomegranate': '🥭', 'lentil': '🌱',
+            'blackgram': '🌱', 'mungbean': '🌱', 'mothbeans': '🌱', 'pigeonpeas': '🌱',
+            'kidneybeans': '🌱', 'chickpea': '🌱', 'coffee': '☕'
+        };
+        const MARKET_PRICES = {  // INR per quintal
+            'rice': 1800, 'maize': 1600, 'cotton': 5500, 'pomegranate': 12000,
+            'apple': 8000, 'banana': 1200, 'mango': 2500, 'grapes': 4500,
+            'watermelon': 800, 'muskmelon': 900, 'orange': 1200, 'papaya': 700,
+            'coconut': 2500, 'jute': 4200, 'coffee': 11000,
+            // defaults
+            'lentil': 5500, 'blackgram': 7000, 'mungbean': 6500, 'kidneybeans': 5000,
+            'chickpea': 4800, 'pigeonpeas': 5200, 'mothbeans': 5800
+        };
+        const OPTIMAL_RANGES = {
+            rice: {n:100, p:40, k:40, ph:6.5, temp:25, hum:80, rain:150},
+            // Simplified - extend for all
+        };
+
+        let history = [];
+
+        async function fetchWeather() {
+            if (!navigator.geolocation) return alert('Geolocation not supported');
+            navigator.geolocation.getCurrentPosition(async (pos) => {
+                const lat = pos.coords.latitude;
+                const lon = pos.coords.longitude;
+                try {
+                    const res = await fetch(`/api/weather/?lat=${lat}&lon=${lon}`);
+                    const data = await res.json();
+                    if (data.error) throw new Error(data.error);
+                    document.getElementById('temperature').value = data.temperature;
+                    document.getElementById('humidity').value = data.humidity;
+                    document.getElementById('rainfall').value = data.rainfall;
+                    document.getElementById('location').value = `Lat:${lat.toFixed(2)}, Lon:${lon.toFixed(2)}`;
+                } catch (e) {
+                    alert('Weather fetch failed: ' + e.message + '\\nGet free API key at openweathermap.org');
+                }
+            });
+        }
+
+        document.getElementById('predictForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            const data = Object.fromEntries(formData);
+            const inputs = [data.n, data.p, data.k, data.temperature, data.humidity, data.ph, data.rainfall].map(Number);
+
+            try {
+                const res = await fetch('/api/recommend/', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({n: inputs[0], p: inputs[1], k: inputs[2], ph: inputs[3], temperature: inputs[4], humidity: inputs[5], rainfall: inputs[6]})
+                });
+                const result = await res.json();
+                if (result.error) throw new Error(result.error);
+
+                showResults(result.recommended_crop, result.yield_estimate, result.confidence_score * 100, inputs, data.location);
+                loadHistory();
+                speakRecommendation(result.recommended_crop);
+            } catch (e) {
+                alert('Prediction failed: ' + e.message);
+            }
+        });
+
+        function showResults(crop, yieldEst, confidence, inputs, location) {
+            document.getElementById('results').style.display = 'grid';
+            document.getElementById('historySection').style.display = 'block';
+
+            // Risks
+            const risks = checkRisks(inputs);
+            
+            // Market
+            const price = MARKET_PRICES[crop.toLowerCase()] || 0;
+            const season = 'Post-Monsoon';  // Simplified
+
+            document.getElementById('results').innerHTML = `
+                <div class="crop-card">
+                    <div class="crop-emoji">${CROPS_EMOJI[crop.toLowerCase()] || '🌱'}</div>
+                    <h2>${crop}</h2>
+                    <div class="confidence-bar"><div class="confidence-fill" style="width: ${confidence}%"></div></div>
+                    <p>Confidence: ${confidence.toFixed(1)}%</p>
+                    <p>Est. Yield: ${yieldEst.toFixed(0)} kg/ha</p>
+                </div>
+                <div class="result-card">
+                    <h3>💰 Market Intelligence</h3>
+                    <p>Avg Price: ₹${price}/quintal</p>
+                    <p>Best Season: ${season}</p>
+                </div>
+                <div class="result-card">
+                    ${risks.map(r => `<div class="risk-card risk-${r.level}">${r.message}</div>`).join('')}
+                </div>
+                <canvas id="yieldChart"></canvas>
+                <canvas id="radarChart"></canvas>
+            `;
+
+            // Charts
+            new Chart(document.getElementById('yieldChart'), {
+                type: 'bar',
+                data: { labels: ['Expected Yield'], datasets: [{data: [yieldEst], backgroundColor: '#f5a623'}] },
+                options: { scales: {y: {beginAtZero: true}} }
+            });
+
+            // Radar - simplified
+            new Chart(document.getElementById('radarChart'), {
+                type: 'radar',
+                data: {
+                    labels: ['N', 'P', 'K', 'pH', 'Temp', 'Hum', 'Rain'],
+                    datasets: [{label: 'Your Soil', data: inputs, backgroundColor: 'rgba(0,200,150,0.2)', borderColor: '#00c896'}]
+                }
+            });
+        }
+
+        function checkRisks(inputs) {
+            const [n,p,k,ph,temp,hum,rain] = inputs;
+            const risks = [];
+            if (ph < 5.5) risks.push({level: 'high', message: '⚠️ High: Low pH - Add lime'});
+            if (n > 120) risks.push({level: 'med', message: '⚠️ Medium: Excess Nitrogen - Risk of leaching'});
+            if (rain < 20) risks.push({level: 'high', message: '⚠️ High: Drought stress - Irrigate'});
+            if (hum > 90) risks.push({level: 'med', message: '⚠️ Medium: High humidity - Disease risk'});
+            if (risks.length === 0) risks.push({level: 'low', message: '✅ Safe conditions'});
+            return risks;
+        }
+
+        async function loadHistory() {
+            const res = await fetch('/api/history/');
+            history = await res.json();
+            const tbody = document.querySelector('#historyTable tbody');
+            tbody.innerHTML = history.slice(0,20).map(h => 
+                `<tr><td>${new Date(h.created_at).toLocaleString()}</td><td>${h.crop}</td><td>${h.yield_est.toFixed(0)}</td><td>N${h.n} P${h.p} K${h.k}</td></tr>`
+            ).join('');
+        }
+
+        function speakRecommendation(crop) {
+            const msg = new SpeechSynthesisUtterance(`Based on your soil analysis, we recommend growing ${crop}`);
+            msg.rate = 0.9;
+            speechSynthesis.speak(msg);
+        }
+
+        // Load initial history
+        loadHistory();
+    </script>
+</body>
+</html>

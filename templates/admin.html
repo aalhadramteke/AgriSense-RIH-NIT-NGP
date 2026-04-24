@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin Panel</title>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Segoe UI';
+            background: linear-gradient(135deg, #141e30, #243b55);
+            color: white;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .container {
+            width: 90%;
+            margin: auto;
+        }
+
+        /* FORM CARD */
+        .form-card {
+            background: rgba(255,255,255,0.1);
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            backdrop-filter: blur(10px);
+        }
+
+        input {
+            padding: 10px;
+            margin: 5px;
+            border-radius: 8px;
+            border: none;
+        }
+
+        button {
+            padding: 10px 20px;
+            background: #00c853;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #00e676;
+        }
+
+        /* TABLE */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            color: black;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        th {
+            background: #0072ff;
+            color: white;
+            padding: 12px;
+        }
+
+        td {
+            padding: 10px;
+            text-align: center;
+        }
+
+        tr:nth-child(even) {
+            background: #f2f2f2;
+        }
+
+        img {
+            border-radius: 5px;
+        }
+
+        .update-btn {
+            background: #ff9800;
+        }
+
+        .update-btn:hover {
+            background: #ffa726;
+        }
+    </style>
+</head>
+
+<body>
+
+<h1>👨‍💼 Admin Dashboard</h1>
+
+<div class="container">
+
+    <!-- ➕ ADD MEDICINE -->
+    <div class="form-card">
+        <h2>➕ Add Medicine</h2>
+
+        <form action="/add_medicine" method="post">
+            <input type="text" name="name" placeholder="Medicine Name" required>
+            <input type="number" name="price" placeholder="Price" required>
+            <input type="number" name="stock" placeholder="Stock" required>
+            <input type="text" name="image" placeholder="Image Name (e.g. neem.jpg)" required>
+            <button type="submit">Add</button>
+        </form>
+    </div>
+
+    <!-- 📋 MEDICINE TABLE -->
+    <table>
+        <tr>
+            <th>Name</th>
+            <th>Price</th>
+            <th>Stock</th>
+            <th>Image</th>
+            <th>Update Stock</th>
+        </tr>
+
+        {% for med in medicines %}
+        <tr>
+            <td>{{ med[1] }}</td>
+            <td>₹{{ med[2] }}</td>
+            <td>{{ med[3] }}</td>
+            <td>
+                <img src="{{ url_for('static', filename='medicines/' + med[4]) }}" width="60">
+            </td>
+            <td>
+                <form action="/update_stock" method="post">
+                    <input type="hidden" name="name" value="{{ med[1] }}">
+                    <input type="number" name="stock" placeholder="New Stock" required>
+                    <button class="update-btn">Update</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+
+    </table>
+
+</div>
+
+</body>
+</html>
