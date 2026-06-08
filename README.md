@@ -102,14 +102,6 @@ Proxies OpenWeatherMap to retrieve local climate based on GPS coordinates.
 
 ---
 
-📸 Screenshots
-
-- **Prediction Input Form:** *(Placeholder for UI Form input)*
-- **Dashboard Results & Analytics:** *(Placeholder for charts and recommendations)*
-- **History Viewer:** *(Placeholder for history table)*
-
----
-
 🚀 Known Limitations and Future Improvements
 - **Models Offline:** Requires running `train_model.py` which dynamically synthesizes data if none is found. True datasets provide higher accuracy.
 - **Scalability:** Uses SQLite locally. Moving to PostgreSQL for production is advised.
